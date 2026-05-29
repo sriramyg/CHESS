@@ -1,11 +1,4 @@
-/*
 
-WHAT THIS FILE DOES??
-    - handles user inpput
-    - displays the current GameState
-    - this is the main driver file
-
-*/
 
 const canvas = document.getElementById("chessboard");
 const ctx = canvas.getContext("2d");
@@ -114,6 +107,8 @@ canvas.addEventListener("click", function(e) {
             if(move.equals(i)){ // when you do 'move.equals(i)' there 'move' becomes 'this', and 'i' becomes 'other'
                 console.log(move.getChessNotation());
                 gs.makeMove(move);
+                let computerMove = getRandomMove(gs);
+                gs.makeMove(computerMove);
                 break;
             }
         }
@@ -131,6 +126,7 @@ canvas.addEventListener("click", function(e) {
 document.addEventListener("keydown", function(e) { // undo move for 'z'
     if (e.key === "z") {
         gs.undoMove();
+        gs.undoMove(); // undoing twice to undo both player's and computer's move at once.
         drawGameState();
     }
 });
