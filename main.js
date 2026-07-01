@@ -70,10 +70,13 @@ function drawPieces(board) {
 
 function drawHighlights(){// highlights the first square selected
     if (sqSelected !== null) {
-        ctx.fillStyle = "rgba(255, 255, 0, 0.4)";
+        ctx.fillStyle = "rgba(255, 67, 64, 0.4)";
         ctx.fillRect(sqSelected[1] * SQUARE_SIZE, sqSelected[0] * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
     }   
 }
+
+
+
 
 canvas.addEventListener("click", function(e) {
     let col = Math.floor(e.offsetX / SQUARE_SIZE);
@@ -106,9 +109,13 @@ canvas.addEventListener("click", function(e) {
         for(let i of validMoves){
             if(move.equals(i)){ // when you do 'move.equals(i)' there 'move' becomes 'this', and 'i' becomes 'other'
                 console.log(move.getChessNotation());
+                
                 gs.makeMove(move);
-                let computerMove = getRandomMove(gs);
+
+                let computerMove = findMove(gs); // this will return the best move for the computer as per minimax
+                console.log(computerMove.getChessNotation()); 
                 gs.makeMove(computerMove);
+                
                 break;
             }
         }
