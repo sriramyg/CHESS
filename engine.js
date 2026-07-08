@@ -110,7 +110,10 @@ function evaluationFunction(gs) { // this is a basic eval function which just co
     return score;
 }
 
-function minimax(depth,enginesEvaluation,gs){
+let nodeCount = 0;  //for counting the number of nodes evaluated by the minimax algorithm
+
+function minimax(depth,alpha,beta,enginesEvaluation,gs){
+    nodeCount++;
     if(depth == 0) {
         return evaluationFunction(gs);
     }
@@ -126,19 +129,29 @@ function minimax(depth,enginesEvaluation,gs){
 
     if(enginesEvaluation){
         let enginesBest = -Infinity;
+
         for(let move of allmoves){
             gs.makeMove(move);
-            enginesBest = Math.max(enginesBest,minimax(depth-1,false,gs))
+            enginesBest = Math.max(enginesBest,minimax(depth-1,alpha,beta,false,gs))
             gs.undoMove();
+            alpha = Math.max(alpha, enginesBest);
+            if(beta <= alpha) break;  
         }
+
         return enginesBest;
+
     }else{
+
         let humansBest = +Infinity;
+
         for(let move of allmoves){
             gs.makeMove(move);
-            humansBest = Math.min(humansBest,minimax(depth-1,true,gs));
+            humansBest = Math.min(humansBest,minimax(depth-1,alpha,beta,true,gs));
             gs.undoMove();
+            beta = Math.min(beta, humansBest);
+            if(beta <= alpha) break;
         }
+
         return humansBest;
     }
 
@@ -152,15 +165,21 @@ function findMove(gs) {
     let allmoves = gs.getValidMoves();
     let bestmove = null;
     let bestscore = +Infinity;
+
+    let alpha = -Infinity;
+    let beta = +Infinity;
+    nodeCount = 0;
     
     for(let move of allmoves) {
         gs.makeMove(move);
-        let score = minimax(3, true, gs);
+        let score = minimax(3, alpha, beta, true, gs);
         gs.undoMove();
         if(bestscore > score){
             bestscore = score;
             bestmove = move;
         }
+        beta = Math.min(beta, bestscore);
     }
+    console.log("Nodes = " + nodeCount);
     return bestmove;
 }
